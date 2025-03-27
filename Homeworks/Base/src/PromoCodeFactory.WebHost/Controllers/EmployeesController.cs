@@ -17,10 +17,12 @@ namespace PromoCodeFactory.WebHost.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<Role> _roleRepository;
 
-        public EmployeesController(IRepository<Employee> employeeRepository)
+        public EmployeesController(IRepository<Employee> employeeRepository, IRepository<Role> roleRepository)
         {
             _employeeRepository = employeeRepository;
+            _roleRepository = roleRepository;
         }
 
         /// <summary>
@@ -47,13 +49,13 @@ namespace PromoCodeFactory.WebHost.Controllers
         /// Получить данные сотрудника по Id
         /// </summary>
         /// <returns></returns>
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id:Guid}")]
         public async Task<ActionResult<EmployeeResponse>> GetEmployeeByIdAsync(Guid id)
         {
             var employee = await _employeeRepository.GetByIdAsync(id);
 
             if (employee == null)
-                return NotFound();
+                return NotFound("Сотрудник не найден");
 
             var employeeModel = new EmployeeResponse()
             {
@@ -69,6 +71,89 @@ namespace PromoCodeFactory.WebHost.Controllers
             };
 
             return employeeModel;
+        }
+
+        /// <summary>
+        /// Создать сотрудника
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult<EmployeeResponse>> CreateEmployeeAsync([FromBody] EmployeeCreateRequest request) 
+        {
+            if (string.IsNullOrEmpty(request.FirstName) || string.IsNullOrEmpty(request.LastName) || string.IsNullOrEmpty(request.Email))
+                return BadRequest("Имя, фамилия и почта - обязательные поля");
+
+            var roles = await Task.WhenAll(request.RoleIds.Select(_roleRepository.GetByIdAsync));
+
+            Employee employee = new Employee() 
+            {
+                Id = Guid.NewGuid(),
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                Roles = roles.ToList()
+            };
+
+            await _employeeRepository.AddAsync(employee);
+
+            return new EmployeeResponse()
+            {
+                Id = employee.Id,
+                Email = employee.Email,
+                FullName = employee.FullName,
+                Roles = employee.Roles.Select(r => new RoleItemResponse
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Description = r.Description
+                }).ToList()
+            };
+        }
+
+        /// <summary>
+        /// Удалить сотрудника
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id:Guid}")]
+        public async Task<ActionResult> DeleteEmployeeAsync(Guid id) 
+        {
+            Employee? employee = await _employeeRepository.GetByIdAsync(id);
+            if (employee is null)
+                return NotFound("Сотрудник не найден");
+
+            if (!await _employeeRepository.DeleteAsync(id))
+                return StatusCode(500);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Обновить сотрудника
+        /// </summary>
+        /// <param name="updateRequest"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        public async Task<ActionResult> UpdateEmployeeAsync([FromBody] EmployeeUpdateRequest updateRequest)
+        {
+            Employee? employee = await _employeeRepository.GetByIdAsync(updateRequest.Id);
+            if (employee is null)
+                return NotFound("Сотрудник не найден");
+
+            var roles = await Task.WhenAll(updateRequest.RoleIds.Select(_roleRepository.GetByIdAsync)
+                                                                .Where(r => r != null).ToList());
+
+            employee.FirstName = updateRequest.FirstName;
+            employee.LastName = updateRequest.LastName;
+            employee.Email = updateRequest.Email;
+            employee.AppliedPromocodesCount = updateRequest.AppliedPromocodesCount;
+
+            bool updated = await _employeeRepository.UpdateAsync(employee);
+            if (!updated)
+                return StatusCode(500, "Ошибка при обновлении сотрудника");
+
+            return NoContent();
         }
     }
 }
