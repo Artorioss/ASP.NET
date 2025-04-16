@@ -4,8 +4,7 @@ using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 
 namespace PromoCodeFactory.DataAccess
 {
-    public class DataContext
-        : DbContext
+    public class DataContext: DbContext
     {
         public DbSet<PromoCode> PromoCodes { get; set; }
 
@@ -24,8 +23,7 @@ namespace PromoCodeFactory.DataAccess
             
         }
         
-        public DataContext(DbContextOptions<DataContext> options)
-            : base(options)
+        public DataContext(DbContextOptions<DataContext> options): base(options)
         {
 
         }

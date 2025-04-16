@@ -7,9 +7,7 @@ using PromoCodeFactory.Core.Domain;
 
 namespace PromoCodeFactory.DataAccess.Repositories
 {
-    public class InMemoryRepository<T>
-        : IRepository<T>
-        where T: BaseEntity
+    public class InMemoryRepository<T>: IRepository<T> where T: BaseEntity
     {
         protected List<T> Data { get; set; }
 

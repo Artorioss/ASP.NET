@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using PromoCodeFactory.DataAccess.Repositories;
 using PromoCodeFactory.WebHost.Models;
 
 namespace PromoCodeFactory.WebHost.Controllers
@@ -11,9 +12,13 @@ namespace PromoCodeFactory.WebHost.Controllers
     /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class PromocodesController
-        : ControllerBase
+    public class PromocodesController: ControllerBase
     {
+        PreferenceRepository _preferenceRepository;
+        public PromocodesController(PreferenceRepository preferenceRepository) 
+        {
+            _preferenceRepository = preferenceRepository;
+        }
         /// <summary>
         /// Получить все промокоды
         /// </summary>
@@ -21,8 +26,9 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpGet]
         public Task<ActionResult<List<PromoCodeShortResponse>>> GetPromocodesAsync()
         {
-            //TODO: Получить все промокоды 
-            throw new NotImplementedException();
+            
+
+
         }
 
         /// <summary>

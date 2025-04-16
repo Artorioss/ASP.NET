@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
+using PromoCodeFactory.DataAccess.Repositories;
 using PromoCodeFactory.WebHost.Models;
 
 namespace PromoCodeFactory.WebHost.Controllers
@@ -14,12 +15,11 @@ namespace PromoCodeFactory.WebHost.Controllers
     /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class EmployeesController
-        : ControllerBase
+    public class EmployeesController: ControllerBase
     {
-        private readonly IRepository<Employee> _employeeRepository;
+        private readonly EmployeeRepository _employeeRepository;
 
-        public EmployeesController(IRepository<Employee> employeeRepository)
+        public EmployeesController(EmployeeRepository employeeRepository)
         {
             _employeeRepository = employeeRepository;
         }
@@ -31,7 +31,7 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpGet]
         public async Task<List<EmployeeShortResponse>> GetEmployeesAsync()
         {
-            var employees = await _employeeRepository.GetAllAsync();
+            var employees = await _employeeRepository.GetEmployeesAsync();
 
             var employeesModelList = employees.Select(x =>
                 new EmployeeShortResponse()
@@ -51,7 +51,7 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<EmployeeResponse>> GetEmployeeByIdAsync(Guid id)
         {
-            var employee = await _employeeRepository.GetByIdAsync(id);
+            var employee = await _employeeRepository.GetEmployeeById(id);
 
             if (employee == null)
                 return NotFound();
