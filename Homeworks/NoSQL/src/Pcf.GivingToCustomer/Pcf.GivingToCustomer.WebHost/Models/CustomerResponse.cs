@@ -11,7 +11,7 @@ namespace Pcf.GivingToCustomer.WebHost.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public List<PreferenceResponse> Preferences { get; set; }
+        public List<Guid> PreferencesIds { get; set; }
         public List<PromoCodeShortResponse> PromoCodes { get; set; }
 
         public CustomerResponse()
@@ -25,11 +25,8 @@ namespace Pcf.GivingToCustomer.WebHost.Models
             Email = customer.Email;
             FirstName = customer.FirstName;
             LastName = customer.LastName;
-            Preferences = customer.Preferences.Select(x => new PreferenceResponse()
-            {
-                Id = x.PreferenceId,
-                Name = x.Preference.Name
-            }).ToList();
+            
+            PreferencesIds = customer.CustomerPreferences.Select(x => Id = x.PreferenceId).ToList();
             PromoCodes = customer.PromoCodes.Select(x => new PromoCodeShortResponse()
                 {
                     Id = x.PromoCode.Id,

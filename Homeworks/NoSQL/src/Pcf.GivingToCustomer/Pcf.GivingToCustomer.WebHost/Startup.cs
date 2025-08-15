@@ -40,10 +40,14 @@ namespace Pcf.GivingToCustomer.WebHost
             services.AddScoped<IDbInitializer, EfDbInitializer>();
             services.AddDbContext<DataContext>(x =>
             {
-                //x.UseSqlite("Filename=PromocodeFactoryGivingToCustomerDb.sqlite");
                 x.UseNpgsql(Configuration.GetConnectionString("PromocodeFactoryGivingToCustomerDb"));
                 x.UseSnakeCaseNamingConvention();
                 x.UseLazyLoadingProxies();
+            });
+
+            services.AddHttpClient<IPreferenceGateway, PreferenceGateway>(c =>
+            {
+                c.BaseAddress = new Uri(Configuration["IntegrationSettings:PreferenceApiUrl"]);
             });
 
             services.AddOpenApiDocument(options =>

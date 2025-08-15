@@ -64,10 +64,10 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Api.WebHost.Controllers
             actual.Email.Should().Be(request.Email);
             actual.FirstName.Should().Be(request.FirstName);
             actual.LastName.Should().Be(request.LastName);
-            actual.Preferences.Should()
+            actual.PreferencesIds.Should()
                 .ContainSingle()
                 .And
-                .Contain(x => x.Id == preferenceId);
+                .Contain(x => x == preferenceId);
         }
         
         [Fact]
@@ -94,18 +94,10 @@ namespace Pcf.GivingToCustomer.IntegrationTests.Api.WebHost.Controllers
                 Email = "ivan_sergeev@mail.ru",
                 FirstName = "Иван",
                 LastName = "Петров",
-                Preferences = new List<PreferenceResponse>()
+                PreferencesIds = new List<Guid>()
                 {
-                    new PreferenceResponse()
-                    {
-                        Id = Guid.Parse("ef7f299f-92d7-459f-896e-078ed53ef99c"),
-                        Name = "Театр",
-                    },
-                    new PreferenceResponse()
-                    {
-                        Id = Guid.Parse("76324c47-68d2-472d-abb8-33cfa8cc0c84"),
-                        Name = "Дети",                    
-                    }
+                    Guid.Parse("ef7f299f-92d7-459f-896e-078ed53ef99c"),
+                    Guid.Parse("76324c47-68d2-472d-abb8-33cfa8cc0c84"),
                 }
             };
 

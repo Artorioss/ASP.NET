@@ -20,7 +20,7 @@ namespace Pcf.ReceivingFromPartner.Core.Domain
         
         public Guid? PartnerManagerId { get; set; }
         
-        public virtual Preference Preference { get; set; }
+        //public virtual Preference Preference { get; set; }
 
         public Guid PreferenceId { get; set; }
     }

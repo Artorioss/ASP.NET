@@ -21,7 +21,7 @@ namespace Pcf.ReceivingFromPartner.WebHost.Mappers
             promocode.BeginDate = DateTime.Now;
             promocode.EndDate = DateTime.Now.AddDays(30);
 
-            promocode.Preference = preference;
+            //promocode.Preference = preference;
             promocode.PreferenceId = preference.Id;
 
             promocode.PartnerManagerId = request.PartnerManagerId;

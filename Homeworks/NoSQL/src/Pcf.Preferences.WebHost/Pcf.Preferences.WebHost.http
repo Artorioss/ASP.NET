@@ -1,0 +1,6 @@
+@Pcf.Preferences.WebHost_HostAddress = http://localhost:5211
+
+GET {{Pcf.Preferences.WebHost_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

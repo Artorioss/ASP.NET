@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Pcf.GivingToCustomer.DataAccess\Pcf.GivingToCustomer.DataAccess.csproj" />
+      <ProjectReference Include="..\Pcf.GivingToCustomer.Integration\Pcf.GivingToCustomer.Integration.csproj" />
       <ProjectReference Include="..\Pcf.GivingToCustomer.WebHost\Pcf.GivingToCustomer.WebHost.csproj" />
     </ItemGroup>
 

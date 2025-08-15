@@ -1,7 +1,6 @@
-﻿namespace Pcf.ReceivingFromPartner.DataAccess.Data
+﻿namespace Pcf.Preferences.DataAccess.Data
 {
-    public class EfDbInitializer
-        : IDbInitializer
+    public class EfDbInitializer: IDbInitializer
     {
         private readonly DataContext _dataContext;
 
@@ -9,13 +8,13 @@
         {
             _dataContext = dataContext;
         }
-        
+
         public void InitializeDb()
         {
             _dataContext.Database.EnsureDeleted();
             _dataContext.Database.EnsureCreated();
-            
-            _dataContext.AddRange(FakeDataFactory.Partners);
+
+            _dataContext.AddRange(FakeDataFactory.Preferences);
             _dataContext.SaveChanges();
         }
     }
