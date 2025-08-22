@@ -10,6 +10,9 @@ using Pcf.Administration.DataAccess.Repositories;
 using Pcf.Administration.DataAccess.Data;
 using Pcf.Administration.Core.Abstractions.Repositories;
 using System;
+using MassTransit;
+using Pcf.Administration.WebHost.Consumers;
+using System.Threading;
 
 namespace Pcf.Administration.WebHost
 {
@@ -44,6 +47,37 @@ namespace Pcf.Administration.WebHost
             {
                 options.Title = "PromoCode Factory Administration API Doc";
                 options.Version = "1.0";
+            });
+
+            //services.AddMassTransit(x =>
+            //{
+            //    x.AddConsumer<PartnerManagerPromoCodeAppliedConsumer>();
+            //    x.UsingRabbitMq((context, cfg) =>
+            //    {
+            //        cfg.Host("127.0.0.1", h =>
+            //        {
+            //            h.Username("guest");
+            //            h.Password("guest");
+            //        });
+
+            //        cfg.ConfigureEndpoints(context);
+            //    });
+            //});
+
+            // Добавляем MassTransit
+            services.AddMassTransit(x =>
+            {
+                x.SetKebabCaseEndpointNameFormatter();
+                x.AddConsumer<PartnerManagerPromoCodeAppliedConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("127.0.0.1", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+                    cfg.ConfigureEndpoints(context);
+                });
             });
         }
 

@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Pcf.ReceivingFromPartner.Integration.Dto
+﻿namespace SharedModels
 {
-    public class GivePromoCodeToCustomerDto
+    public class GivePromoCodeToCustomerCommand
     {
         public string ServiceInfo { get; set; }
 

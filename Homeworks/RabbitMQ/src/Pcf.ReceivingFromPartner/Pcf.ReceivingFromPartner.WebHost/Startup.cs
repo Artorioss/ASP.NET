@@ -12,6 +12,7 @@ using Pcf.ReceivingFromPartner.DataAccess;
 using Pcf.ReceivingFromPartner.DataAccess.Repositories;
 using Pcf.ReceivingFromPartner.DataAccess.Data;
 using Pcf.ReceivingFromPartner.Integration;
+using MassTransit;
 
 namespace Pcf.ReceivingFromPartner.WebHost
 {
@@ -34,15 +35,8 @@ namespace Pcf.ReceivingFromPartner.WebHost
             services.AddScoped<INotificationGateway, NotificationGateway>();
             services.AddScoped<IDbInitializer, EfDbInitializer>();
 
-            services.AddHttpClient<IGivingPromoCodeToCustomerGateway, GivingPromoCodeToCustomerGateway>(c =>
-            {
-                c.BaseAddress = new Uri(Configuration["IntegrationSettings:GivingToCustomerApiUrl"]);
-            });
-
-            services.AddHttpClient<IAdministrationGateway, AdministrationGateway>(c =>
-            {
-                c.BaseAddress = new Uri(Configuration["IntegrationSettings:AdministrationApiUrl"]);
-            });
+            services.AddScoped<IGivingPromoCodeToCustomerGateway, GivingPromoCodeToCustomerGateway>();
+            services.AddScoped<IAdministrationGateway, AdministrationGateway>();
 
             services.AddDbContext<DataContext>(x =>
             {
@@ -58,6 +52,21 @@ namespace Pcf.ReceivingFromPartner.WebHost
             {
                 options.Title = "PromoCode Factory Receiving From Partner API Doc";
                 options.Version = "1.0";
+            });
+
+            services.AddMassTransit(x =>
+            {
+                x.SetKebabCaseEndpointNameFormatter();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("127.0.0.1", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.ConfigureEndpoints(context);
+                });
             });
         }
 
