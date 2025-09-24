@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace PromoCodeFactory.DataAccess.Data
 {
@@ -11,21 +11,23 @@ namespace PromoCodeFactory.DataAccess.Data
         {
             _dataContext = dataContext;
         }
-        
+
         public void InitializeDb()
         {
-            _dataContext.Database.EnsureDeleted();
-            _dataContext.Database.EnsureCreated();
-            
+            //_dataContext.Database.EnsureDeleted();
+            //_dataContext.Database.EnsureCreated();
+
+            _dataContext.Database.Migrate();
+
             _dataContext.AddRange(FakeDataFactory.Employees);
             _dataContext.SaveChanges();
-            
+
             _dataContext.AddRange(FakeDataFactory.Preferences);
             _dataContext.SaveChanges();
-            
+
             _dataContext.AddRange(FakeDataFactory.Customers);
             _dataContext.SaveChanges();
-            
+
             _dataContext.AddRange(FakeDataFactory.Partners);
             _dataContext.SaveChanges();
         }
